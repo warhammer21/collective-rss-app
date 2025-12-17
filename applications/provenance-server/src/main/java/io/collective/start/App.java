@@ -6,10 +6,14 @@ import io.collective.articles.ArticleRecord;
 import io.collective.articles.ArticlesController;
 import io.collective.restsupport.BasicApp;
 import io.collective.restsupport.NoopController;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.jetbrains.annotations.NotNull;
 import io.collective.restsupport.RestTemplate;
 import io.collective.endpoints.EndpointWorker;
+import io.collective.endpoints.EndpointDataGateway;
+import io.collective.endpoints.EndpointWorkFinder;
+import io.collective.endpoints.EndpointTask;
+import io.collective.workflow.WorkScheduler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.TimeZone;
@@ -27,9 +31,18 @@ public class App extends BasicApp {
 
         { // todo - start the endpoint worker
             RestTemplate template = new RestTemplate();
-            EndpointWorker endworker = new EndpointWorker(template,articleDataGateway);
+            EndpointWorker endworker = new EndpointWorker(template, articleDataGateway);
             
+            EndpointDataGateway endpointGateway = new EndpointDataGateway();
+            EndpointWorkFinder finder = new EndpointWorkFinder(endpointGateway);
 
+            WorkScheduler<EndpointTask> scheduler = new WorkScheduler<>(
+                finder,              // The finder
+                List.of(endworker),  // List of workers
+                10L                  // Delay in seconds
+            );
+            
+            scheduler.start();
         }
     }
 
