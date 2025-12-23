@@ -6,6 +6,7 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArticlesController extends BasicHandler {
@@ -18,18 +19,65 @@ public class ArticlesController extends BasicHandler {
 
     @Override
     public void handle(String target, Request request, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+
+        // ═══════════════════════════════════════════
+        // GET /articles - Return ALL articles
+        // ═══════════════════════════════════════════
         get("/articles", List.of("application/json", "text/html"), request, servletResponse, () -> {
+            // 1. Get all ArticleRecords from gateway
+            List<ArticleRecord> all_articles = this.gateway.findAll();
 
-            { // todo - query the articles gateway for *all* articles, map record to infos, and send back a collection of article infos
+            // 2. Create empty list to hold ArticleInfo objects
+            List<ArticleInfo> article_infos = new ArrayList<>();
 
+            // 3. Loop through each ArticleRecord
+            for (int i = 0; i < all_articles.size(); i++) {
+                // 4. GET the ArticleRecord at index i
+                ArticleRecord record = all_articles.get(i);
+                
+                // 5. CREATE a NEW ArticleInfo object from the record's data
+                ArticleInfo info = new ArticleInfo(
+                    record.getId(),
+                    record.getTitle(),
+                    record.isAvailable()
+                );
+                
+                // 6. ADD the ArticleInfo object to the list
+                article_infos.add(info);
             }
+
+            // 7. Return the list of ArticleInfo objects
+            return article_infos;
         });
 
+        // ═══════════════════════════════════════════
+        // GET /available - Return ONLY available articles
+        // ═══════════════════════════════════════════
         get("/available", List.of("application/json"), request, servletResponse, () -> {
+            // TODO - YOUR CODE HERE!
+            // // todo - query the articles gateway for *available* articles, map records to infos, and send back a collection of article infos
+              // 1. Get all ArticleRecords from gateway
+            List<ArticleRecord> all_articles = this.gateway.findAvailable();
 
-            { // todo - query the articles gateway for *available* articles, map records to infos, and send back a collection of article infos
+            // 2. Create empty list to hold ArticleInfo objects
+            List<ArticleInfo> article_infos = new ArrayList<>();
 
+            // 3. Loop through each ArticleRecord
+            for (int i = 0; i < all_articles.size(); i++) {
+                // 4. GET the ArticleRecord at index i
+                ArticleRecord record = all_articles.get(i);
+                
+                // 5. CREATE a NEW ArticleInfo object from the record's data
+                ArticleInfo info = new ArticleInfo(
+                    record.getId(),
+                    record.getTitle(),
+                    record.isAvailable()
+                );
+                
+                // 6. ADD the ArticleInfo object to the list
+                article_infos.add(info);
             }
+            return article_infos;  // Replace this with your implementation
         });
     }
 }
