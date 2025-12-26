@@ -23,6 +23,14 @@ public class ArticlesController extends BasicHandler {
         // ═══════════════════════════════════════════
         // GET /articles - Return ALL articles
         // ═══════════════════════════════════════════
+        System.out.println("=== DEBUG ===");
+        System.out.println("Request URI: " + request.getRequestURI());
+        System.out.println("Request Method: " + request.getMethod());
+        System.out.println("Accept Header: " + request.getHeader("Accept"));
+        System.out.println("=============");
+        System.out.println("ArticlesController handling: " + request.getRequestURI());
+    
+            
         get("/articles", List.of("application/json", "text/html"), request, servletResponse, () -> {
             // 1. Get all ArticleRecords from gateway
             List<ArticleRecord> all_articles = this.gateway.findAll();
@@ -38,8 +46,7 @@ public class ArticlesController extends BasicHandler {
                 // 5. CREATE a NEW ArticleInfo object from the record's data
                 ArticleInfo info = new ArticleInfo(
                     record.getId(),
-                    record.getTitle(),
-                    record.isAvailable()
+                    record.getTitle()
                 );
                 
                 // 6. ADD the ArticleInfo object to the list
@@ -47,7 +54,7 @@ public class ArticlesController extends BasicHandler {
             }
 
             // 7. Return the list of ArticleInfo objects
-            return article_infos;
+            writeJsonBody(servletResponse, article_infos);
         });
 
         // ═══════════════════════════════════════════
@@ -70,14 +77,13 @@ public class ArticlesController extends BasicHandler {
                 // 5. CREATE a NEW ArticleInfo object from the record's data
                 ArticleInfo info = new ArticleInfo(
                     record.getId(),
-                    record.getTitle(),
-                    record.isAvailable()
+                    record.getTitle()
                 );
                 
                 // 6. ADD the ArticleInfo object to the list
                 article_infos.add(info);
             }
-            return article_infos;  // Replace this with your implementation
+            writeJsonBody(servletResponse, article_infos);
         });
     }
 }

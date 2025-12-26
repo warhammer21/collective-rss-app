@@ -43,7 +43,24 @@ visual
 │  Thread 4: EndpointWorker           │
 │  ...                                │
 └─────────────────────────────────────┘
+## The Complete Flow
 
+### **App Startup:**
+```
+1. main() runs
+   ↓
+2. Creates App(8881)
+   ↓
+3. Calls app.start()
+   ↓
+4. start() executes:
+   ├─→ super.start()
+   │   └── Starts Jetty on port 8881
+   │       └── Registers ArticlesController via handlerList()
+   │           └── ArticlesController is NOW listening for /articles requests
+   │
+   └─→ WorkScheduler.start()
+       └── Background worker starts (runs every 10 seconds)
 app.start()
     ↓
 ├─→ super.start() → Starts Jetty (REST API) on port 8881
