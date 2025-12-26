@@ -3,7 +3,7 @@
 A common architecture used for data collection.
 
 Provenance collects and stores articles from [infoq.com](https://www.infoq.com/) and follows a
-Netflix [Conductor-esque](https://netflix.github.io/conductor/) architecture.
+Netflix [[Conductor-esque](https://netflix.github.io/conductor/)](https://docs.conductor-oss.org/devguide/architecture/index.html) architecture.
 
 ### History
 
@@ -113,3 +113,14 @@ Thanks,
 The IC Team
 
 © 2022 by Initial Capacity, Inc. All rights reserved.
+
+## key learnings :
+While completing this exercise, I focused on the underlying Systems Design that makes "Conductor-esque" architectures scale.
+
+Hybrid Topology: Implemented a Mediator Topology using a dual-thread-pool strategy.
+
+The "Scout & Factory" Pattern: * Polling Pool: Managed "Managers" that monitor state without blocking.
+
+Execution Pool: A shared resource pool that handles heavy I/O (RSS scraping) while maintaining back-pressure.
+
+Orchestration vs. Choreography: Explored the trade-offs of centralized control (Mediator) versus distributed events (Broker), focusing on State Management and Idempotency.
